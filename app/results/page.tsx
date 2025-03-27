@@ -2,195 +2,218 @@
 
 import { useTest } from "../context/TestProvider";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
-import { saveAs } from 'file-saver';
-import html2canvas from 'html2canvas';
+import Image from "next/image";
+
+// Component to display trait bars
+const TraitBar = ({ 
+  trait, 
+  score, 
+  color,
+  index
+}: { 
+  trait: string; 
+  score: number; 
+  color: string;
+  index: number;
+}) => {
+  return (
+    <div className="mb-3 animate-fade-in" style={{ animationDelay: `${index * 150}ms` }}>
+      <div className="flex justify-between mb-1">
+        <span className="font-medium text-gray-900 dark:text-amber-100">{trait}</span>
+        <span className="font-medium text-gray-800 dark:text-amber-200">{score}%</span>
+      </div>
+      <div className="w-full bg-white rounded-full h-3 dark:bg-gray-800 border-2 border-black">
+        <div 
+          className={`h-full rounded-full ${color} animate-grow-width`}
+          style={{ 
+            width: `${score}%`,
+            animationDelay: `${(index * 150) + 300}ms`,
+            animationDuration: '1.5s'
+          }}
+        ></div>
+      </div>
+    </div>
+  );
+};
 
 export default function ResultsPage() {
   const router = useRouter();
   const { isTestComplete, calculateResults, restartTest } = useTest();
-  const [animationComplete, setAnimationComplete] = useState(false);
-  const resultCardRef = useRef<HTMLDivElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   
   // Redirect if test is not complete
   useEffect(() => {
     if (!isTestComplete) {
       router.push("/test");
-    } else {
-      // Trigger animation completion after a delay
-      const timer = setTimeout(() => {
-        setAnimationComplete(true);
-      }, 800);
-      
-      return () => clearTimeout(timer);
     }
   }, [isTestComplete, router]);
   
   // Get results
   const results = calculateResults();
   
-  // 保留整體心胖度作為主要結果
-  const overallFattness = results["整體心胖"] || 75;
-  
-  // 標籤文字基於心胖度
-  const getFatLabel = () => {
-    if (overallFattness > 85) return "超級胖";
-    if (overallFattness > 70) return "非常胖";
-    if (overallFattness > 50) return "有點胖";
-    return "微胖";
-  };
-  
   // 分享結果
-  const shareResult = async () => {
+  const shareResults = async () => {
     try {
       if (navigator.share) {
         await navigator.share({
-          title: '狗狗心胖檢測結果',
-          text: `我的心靈${getFatLabel()}度達到了${overallFattness}%！快來測測你的心有多胖吧！`,
+          title: '狗狗肥胖檢測結果',
+          text: `我的肥胖程度是${results["整體肥胖"]}%！看看你有多胖？`,
           url: window.location.href,
         });
       } else {
-        // 如果瀏覽器不支援 Web Share API，複製連結到剪貼簿
+        // 複製到剪貼簿作為備選方案
         await navigator.clipboard.writeText(
-          `我的心靈${getFatLabel()}度達到了${overallFattness}%！快來測測你的心有多胖吧！${window.location.origin}`
+          `我的肥胖程度是${results["整體肥胖"]}%！看看你有多胖？ ${window.location.href}`
         );
-        alert('結果連結已複製到剪貼簿！');
+        alert('已複製結果連結到剪貼簿！');
       }
     } catch (error) {
       console.error('分享失敗:', error);
     }
   };
-  
-  // 匯出結果為圖片
-  const exportResult = async () => {
-    if (!resultCardRef.current) return;
+
+  // 匯出圖片
+  const exportAsImage = async () => {
+    if (!resultRef.current) return;
     
     try {
-      const canvas = await html2canvas(resultCardRef.current, {
-        backgroundColor: null,
-        scale: 2,
-      });
-      canvas.toBlob((blob: Blob | null) => {
-        if (blob) {
-          saveAs(blob, `狗狗心胖檢測-${overallFattness}%.png`);
-        }
-      });
+      // 動態引入 html-to-image 避免 SSR 問題
+      const htmlToImage = await import('html-to-image');
+      const dataUrl = await htmlToImage.toPng(resultRef.current);
+      
+      // 創建一個臨時連結下載圖片
+      const link = document.createElement('a');
+      link.download = '我的肥胖檢測結果.png';
+      link.href = dataUrl;
+      link.click();
     } catch (error) {
-      console.error('匯出失敗:', error);
+      console.error('匯出圖片失敗:', error);
+      alert('匯出圖片失敗，請再試一次');
     }
   };
   
-  return (
-    <div className="flex flex-col items-center min-h-screen p-3 sm:p-8 py-8 sm:py-16 gap-6 font-[family-name:var(--font-geist-sans)] bg-amber-50 dark:bg-gray-900 overflow-hidden">
-      <main className="flex flex-col gap-6 items-center max-w-md mx-auto w-full">
-        <div ref={resultCardRef} className="w-full bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 border-4 border-black flex flex-col items-center animate-fade-in">
-          <div className="w-32 h-32 sm:w-40 sm:h-40 animate-bounce-slow mb-4">
-            <svg 
-              viewBox="0 0 100 100" 
-              xmlns="http://www.w3.org/2000/svg" 
-              fill="none"
-              stroke="#000"
-              strokeWidth="4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <g>
-                {/* 狗頭 */}
-                <circle cx="50" cy="50" r="30" fill="#FFF8E1" />
-                {/* 左耳 */}
-                <path d="M25,40 Q15,20 30,30" fill="none" />
-                {/* 右耳 */}
-                <path d="M75,40 Q85,20 70,30" fill="none" />
-                {/* 左眼 */}
-                <circle cx="40" cy="45" r="3" fill="#000" />
-                {/* 右眼 */}
-                <circle cx="60" cy="45" r="3" fill="#000" />
-                {/* 鼻子 */}
-                <circle cx="50" cy="55" r="5" fill="#000" />
-                {/* 大笑嘴巴 */}
-                <path d="M35,65 Q50,80 65,65" strokeWidth="3" fill="none" />
-                {/* 皇冠 */}
-                <path d="M30,25 L45,15 L55,15 L70,25" fill="none" />
-                <path d="M35,25 L45,15" fill="none" />
-                <path d="M55,15 L65,25" fill="none" />
-                <circle cx="45" cy="15" r="2" fill="#FFCC80" />
-                <circle cx="55" cy="15" r="2" fill="#FFCC80" />
-              </g>
-            </svg>
-          </div>
+  // Define colors for each trait
+  const traitColors: Record<string, string> = {
+    "食物執念": "bg-amber-400",
+    "運動迴避": "bg-blue-400",
+    "自我欺騙": "bg-purple-400",
+    "零食創意": "bg-green-400",
+    "整體肥胖": "bg-amber-500"
+  };
 
-          <h1 className="text-4xl sm:text-5xl font-black mb-4 text-center text-gray-900 dark:text-amber-400">
-            你{getFatLabel()}的！
-          </h1>
-          
-          <div className="w-full my-6">
-            <div className="flex justify-between mb-2 items-center">
-              <span className="text-xl font-bold text-gray-900 dark:text-amber-400">心胖度</span>
-              <span className="text-xl font-bold bg-white dark:bg-gray-900 text-gray-900 dark:text-amber-100 px-3 py-1 rounded-full border-2 border-black">
-                {overallFattness}%
-              </span>
+  // 計算結果等級
+  const getFatLevel = () => {
+    const overallScore = results["整體肥胖"] || 0;
+    if (overallScore > 80) return "超級胖狗";
+    if (overallScore > 60) return "大胖狗";
+    if (overallScore > 40) return "中胖狗";
+    return "小胖狗";
+  };
+  
+  return (
+    <div className="flex flex-col items-center min-h-screen p-3 sm:p-6 py-6 sm:py-10 gap-3 sm:gap-6 font-[family-name:var(--font-geist-sans)] bg-amber-50 dark:bg-gray-900 overflow-hidden">
+      <main className="flex flex-col gap-3 sm:gap-6 items-center max-w-md mx-auto w-full">
+        {/* 可導出的結果區塊 */}
+        <div ref={resultRef} className="w-full bg-amber-50 p-4 rounded-lg">
+          <div className="text-center animate-fade-down">
+            <div className="flex justify-center mb-2">
+              <div className="w-40 h-40 sm:w-48 sm:h-48 animate-bounce-slow relative">
+                <Image 
+                  src="/fat-test.png" 
+                  alt="胖狗圖片"
+                  width={200}
+                  height={200}
+                  className="object-contain"
+                />
+              </div>
             </div>
-            <div className="w-full bg-white rounded-full h-6 dark:bg-gray-800 border-2 border-black">
-              <div 
-                className="h-full rounded-full bg-amber-400 dark:bg-amber-500 animate-grow-width"
-                style={{ 
-                  width: `${overallFattness}%`,
-                  animationDelay: `500ms`,
-                  animationDuration: '2s'
-                }}
-              ></div>
+            <h1 className="text-4xl sm:text-5xl font-bold mb-2 text-gray-900 dark:text-amber-400">你是一隻{getFatLevel()}！</h1>
+            <p className="text-lg text-gray-800">肥胖指數：<span className="font-bold text-2xl">{results["整體肥胖"]}%</span></p>
+          </div>
+          
+          {/* 簡化的結果視覺化 */}
+          <div className="w-full bg-white shadow-md rounded-lg p-4 mt-4 animate-fade-up border-4 border-black">
+            <h2 className="text-xl font-bold mb-3 text-gray-900">肥胖特質</h2>
+            
+            {Object.entries(results)
+              .filter(([trait]) => trait !== "整體肥胖" && ["食物執念", "運動迴避", "零食創意"].includes(trait))
+              .map(([trait, score], index) => (
+                <TraitBar 
+                  key={trait} 
+                  trait={trait} 
+                  score={score} 
+                  color={traitColors[trait] || "bg-gray-500"}
+                  index={index}
+                />
+              ))
+            }
+            
+            <div className="mt-4 pt-3 border-t-2 border-black">
+              <div className="flex justify-between mb-1 items-center">
+                <span className="font-bold text-lg text-gray-900">整體肥胖度</span>
+                <span className="font-bold bg-white text-gray-900 px-3 py-1 rounded-full border-2 border-black">
+                  {results["整體肥胖"]}%
+                </span>
+              </div>
+              <div className="w-full bg-white rounded-full h-4 dark:bg-gray-800 border-2 border-black">
+                <div 
+                  className="h-full rounded-full bg-amber-400 dark:bg-amber-500 animate-grow-width"
+                  style={{ 
+                    width: `${results["整體肥胖"]}%`,
+                    animationDelay: `1200ms`,
+                    animationDuration: '2s'
+                  }}
+                ></div>
+              </div>
             </div>
           </div>
           
-          <p className="text-center text-lg text-gray-800 dark:text-amber-200 mb-2">
-            你的心靈像隻吃太飽的柴犬一樣胖！
-          </p>
-          
-          <p className="italic text-sm text-center text-gray-700 dark:text-amber-300 mt-2 mb-4">
-            "不是你胖，只是你的心靈為了裝下那些想法，長了額外的軟墊罷了。"
-          </p>
-          
-          <div className="text-xs text-center text-gray-500 dark:text-amber-200/70 mt-2">
-            心胖檢測 | 純屬娛樂
+          {/* Fat Quote */}
+          <div className="text-center p-3 bg-white rounded-lg mt-3 animate-fade-in border-3 border-black" style={{ animationDelay: '1.5s' }}>
+            <p className="italic text-gray-800">
+              &ldquo;不是你胖，只是你吃太多餅乾了。汪！&rdquo;
+            </p>
+            <p className="text-xs text-gray-700 mt-1">– 肥胖研究院</p>
           </div>
         </div>
         
-        {/* Action buttons */}
-        <div className={`grid grid-cols-2 gap-4 w-full mt-2 transition-opacity duration-500 ${animationComplete ? 'opacity-100' : 'opacity-0'}`}>
+        {/* 分享和匯出按鈕 */}
+        <div className="flex gap-3 w-full mt-1 sm:mt-2">
           <button
-            onClick={shareResult}
-            className="rounded-full border-4 border-black transition-colors flex items-center justify-center bg-amber-300 text-black hover:bg-amber-400 font-medium text-lg h-14 px-4 w-full"
+            onClick={shareResults}
+            className="rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center bg-amber-300 text-black hover:bg-amber-400 font-medium text-base h-14 sm:h-12"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
             </svg>
             分享結果
           </button>
           
           <button
-            onClick={exportResult}
-            className="rounded-full border-4 border-black transition-colors flex items-center justify-center bg-white hover:bg-amber-100 font-medium text-lg h-14 px-4 w-full text-gray-900"
+            onClick={exportAsImage}
+            className="rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center bg-white text-black hover:bg-amber-100 font-medium text-base h-14 sm:h-12"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
             </svg>
-            儲存圖片
+            匯出圖片
           </button>
         </div>
         
-        {/* Navigation buttons */}
-        <div className={`flex gap-4 items-center flex-col mt-2 w-full transition-opacity duration-500 ${animationComplete ? 'opacity-100' : 'opacity-0'}`}>
+        {/* 操作按鈕 */}
+        <div className="flex gap-3 w-full">
           <button
             onClick={restartTest}
-            className="rounded-full border-4 border-black transition-colors flex items-center justify-center bg-amber-300 text-black hover:bg-amber-400 font-medium text-lg h-14 px-8 w-full"
+            className="rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center bg-amber-300 text-black hover:bg-amber-400 font-medium text-base h-14 sm:h-12"
           >
-            再測一次！汪汪！
+            再測一次！
           </button>
           
           <Link
             href="/"
-            className="rounded-full border-4 border-black transition-colors flex items-center justify-center bg-white hover:bg-amber-100 dark:bg-gray-800 dark:hover:bg-gray-700 font-medium text-lg h-14 px-8 w-full text-gray-900 dark:text-amber-200"
+            className="rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center bg-white hover:bg-amber-100 font-medium text-base h-14 sm:h-12 text-gray-900"
           >
             回主頁
           </Link>

@@ -3,90 +3,71 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="flex flex-col items-center min-h-screen p-4 sm:p-8 py-10 sm:py-20 gap-4 sm:gap-8 font-[family-name:var(--font-geist-sans)] bg-amber-50 dark:bg-gray-900 overflow-hidden">
-      <main className="flex flex-col gap-5 sm:gap-8 items-center max-w-3xl mx-auto text-center">
-        <div className="relative w-40 h-40 sm:w-56 sm:h-56 mb-0 sm:mb-2 animate-float">
-          <svg
-            viewBox="0 0 200 200"
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-full"
-          >
-            {/* 黑色粗線小狗 */}
-            <g stroke="#000" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-              {/* 狗狗身體 */}
-              <path d="M60,130 Q80,140 120,130 Q140,120 150,100 Q155,80 140,70 Q120,60 100,70 Q80,60 60,70 Q45,80 50,100 Q60,120 60,130" fill="#FFF8E1" />
+      <main className="flex flex-col gap-4 sm:gap-6 items-center max-w-3xl mx-auto w-full">
+        <div className="flex justify-center w-full">
+          <div className="w-48 h-48 sm:w-64 sm:h-64">
+            {/* SVG Logo */}
+            <svg 
+              viewBox="0 0 200 200" 
+              xmlns="http://www.w3.org/2000/svg" 
+              fill="none"
+              stroke="#000"
+              strokeWidth="4"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              {/* 胖狗形狀 */}
+              <ellipse cx="100" cy="120" rx="70" ry="60" fill="#F9E3A3" />
               
-              {/* 狗狗頭 */}
-              <circle cx="100" cy="90" r="35" fill="#FFF8E1" />
+              {/* 狗耳朵 */}
+              <path d="M50,80 Q30,30 60,60" fill="#F9E3A3" strokeWidth="4" />
+              <path d="M150,80 Q170,30 140,60" fill="#F9E3A3" strokeWidth="4" />
               
-              {/* 狗狗耳朵 */}
-              <path d="M75,65 Q65,50 80,60" fill="none" />
-              <path d="M125,65 Q135,50 120,60" fill="none" />
+              {/* 狗臉 */}
+              <circle cx="80" cy="100" r="6" fill="#000" stroke="none" /> {/* 左眼 */}
+              <circle cx="120" cy="100" r="6" fill="#000" stroke="none" /> {/* 右眼 */}
+              <circle cx="100" cy="115" r="8" fill="#000" stroke="none" /> {/* 鼻子 */}
+              <path d="M70,130 Q100,150 130,130" strokeWidth="4" /> {/* 嘴巴 */}
               
-              {/* 狗狗眼睛 */}
-              <circle cx="85" cy="85" r="4" fill="#000" />
-              <circle cx="115" cy="85" r="4" fill="#000" />
+              {/* 小手握餅乾 */}
+              <path d="M70,160 Q60,170 70,180" strokeWidth="4" fill="#F9E3A3" />
+              <circle cx="70" cy="170" r="12" fill="#B27C4A" strokeWidth="4" /> {/* 餅乾 */}
+              <circle cx="65" cy="165" r="2" fill="#000" stroke="none" /> {/* 餅乾點點 */}
+              <circle cx="75" cy="170" r="2" fill="#000" stroke="none" /> {/* 餅乾點點 */}
+              <circle cx="68" cy="175" r="2" fill="#000" stroke="none" /> {/* 餅乾點點 */}
               
-              {/* 狗狗鼻子和嘴 */}
-              <circle cx="100" cy="95" r="5" fill="#000" />
-              <path d="M85,105 Q100,115 115,105" fill="none" />
-              
-              {/* 思考氣泡 */}
-              <circle cx="150" cy="50" r="10" fill="#FFF" />
-              <circle cx="165" cy="40" r="6" fill="#FFF" />
-              <circle cx="175" cy="30" r="4" fill="#FFF" />
-              
-              {/* 食物在思考氣泡中 */}
-              <path d="M145,50 Q150,45 155,50 Q150,55 145,50" fill="#FFCC80" />
-            </g>
-            
-            {/* 文字 */}
-            <text x="100" y="175" textAnchor="middle" fontSize="18" fontWeight="bold" fill="#000">
-              心胖檢測
-            </text>
-          </svg>
+              {/* 尾巴 */}
+              <path d="M170,120 Q190,100 180,90" strokeWidth="4" />
+            </svg>
+          </div>
         </div>
         
-        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight md:text-5xl leading-tight text-gray-900 dark:text-amber-100">
-          狗狗心胖檢測
-        </h1>
+        <div className="text-center">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-amber-400">狗狗肥胖檢測</h1>
+          <p className="text-base sm:text-lg text-gray-800 dark:text-amber-200 mt-3">
+            你有多胖？這個測試將揭示你內心的肥胖程度。請準備好面對真相，汪！
+          </p>
+        </div>
         
-        <p className="text-lg sm:text-xl text-gray-800 dark:text-amber-100 max-w-xl">
-          你的心靈是否像隻吃太多零食的狗狗一樣胖呢？透過我們這個毫無科學根據的測驗來發現你內心的小胖狗！
-          警告：結果可能會讓你噴飯又略帶冒犯。
-        </p>
-        
-        <div className="max-w-2xl bg-white dark:bg-gray-800 rounded-lg p-5 sm:p-6 shadow-md w-full border-4 border-black">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-gray-900 dark:text-amber-100">如何運作</h2>
-          <ol className="list-decimal text-left space-y-3 mx-auto inline-block pl-5">
-            <li className="tracking-[-.01em] text-lg sm:text-base">
-              回答一系列莫名其妙的問題
-            </li>
-            <li className="tracking-[-.01em] text-lg sm:text-base">
-              我們的算法使用AI（人工智障）分析你的回答
-            </li>
-            <li className="tracking-[-.01em] text-lg sm:text-base">
-              獲得詳細的心胖特質分析報告
-            </li>
-            <li className="tracking-[-.01em] text-lg sm:text-base">
-              發現我們早就知道的事實：你的心靈跟隻吃太飽的柴犬一樣胖
-            </li>
+        <div className="bg-white dark:bg-gray-800 p-4 sm:p-6 rounded-lg shadow-md border-4 border-black w-full">
+          <h2 className="text-xl font-bold mb-3 text-gray-900 dark:text-amber-400">測試方法</h2>
+          <ol className="list-decimal pl-5 space-y-2 text-gray-800 dark:text-amber-200">
+            <li>回答一系列關於你日常生活習慣的問題</li>
+            <li>我們會用超科學™的方法分析你的回答</li>
+            <li>得出你的肥胖特質分析報告</li>
+            <li>接受現實：你就是一隻胖狗</li>
           </ol>
         </div>
-
-        <div className="mt-2 sm:mt-4 w-full max-w-xs">
-          <Link
-            className="rounded-full border-4 border-black transition-colors flex items-center justify-center bg-amber-300 text-black hover:bg-amber-400 font-medium text-lg sm:text-base h-14 sm:h-12 px-8 w-full"
-            href="/test"
-          >
-            開始檢測吧！汪！
-          </Link>
-        </div>
         
-        <div className="mt-3 sm:mt-8 text-sm sm:text-sm text-gray-800 dark:text-amber-200 max-w-xl">
-          <p>
-            <strong>免責聲明：</strong>此測驗純屬胡說八道，請勿認真對待。
-            如果你感到被冒犯，那只是你心中的小胖狗在抗議而已。
-          </p>
+        <Link 
+          href="/test" 
+          className="rounded-full border-4 border-black transition-colors bg-amber-300 hover:bg-amber-400 text-black font-bold text-lg sm:text-xl py-3 px-8 sm:py-4 sm:px-10"
+        >
+          開始測試！汪！
+        </Link>
+        
+        <div className="text-sm text-gray-700 dark:text-amber-300 mt-2 text-center">
+          <p>*這個測試純屬娛樂，請勿當真。不過你真的很胖就是了。</p>
         </div>
       </main>
     </div>

@@ -164,7 +164,7 @@ export function TestProvider({ children }: { children: React.ReactNode }) {
       "運動迴避": 0,
       "自我欺騙": 0,
       "零食創意": 0,
-      "整體心胖": 0,
+      "整體肥胖": 0,
     };
     
     // Map questions to traits
@@ -177,7 +177,7 @@ export function TestProvider({ children }: { children: React.ReactNode }) {
       6: '自我欺騙',
       7: '零食創意',
       8: '食物執念',
-      9: '整體心胖',
+      9: '整體肥胖',
       10: '運動迴避'
     };
     
@@ -202,7 +202,7 @@ export function TestProvider({ children }: { children: React.ReactNode }) {
     });
     
     // Calculate overall mental fattness
-    traits["整體心胖"] = Math.round(
+    traits["整體肥胖"] = Math.round(
       (traits["食物執念"] + 
       traits["運動迴避"] + 
       traits["自我欺騙"] + 

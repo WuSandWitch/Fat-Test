@@ -3,7 +3,6 @@
 import { useTest } from "../context/TestProvider";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 
 export default function TestPage() {
   const router = useRouter();
@@ -71,7 +70,7 @@ export default function TestPage() {
       <main className="flex flex-col gap-4 sm:gap-8 items-center max-w-3xl mx-auto w-full">
         <div className="w-full">
           <div className="flex flex-col sm:flex-row sm:justify-between items-center mb-3 sm:mb-4 gap-2">
-            <h1 className="text-2xl sm:text-2xl font-bold text-gray-900 dark:text-amber-100">狗狗心胖檢測</h1>
+            <h1 className="text-2xl sm:text-2xl font-bold text-gray-900 dark:text-amber-100">狗狗肥胖檢測</h1>
             <span className="text-base sm:text-sm font-medium bg-white dark:bg-gray-800 text-gray-900 dark:text-amber-100 px-3 py-1 rounded-full border-2 border-black">
               第 {currentQuestionIndex + 1} 題 / 共 {questions.length} 題
             </span>
