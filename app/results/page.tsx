@@ -121,7 +121,7 @@ export default function ResultsPage() {
             <div className="flex justify-center mb-2">
               <div className="w-40 h-40 sm:w-48 sm:h-48 animate-bounce-slow relative">
                 <Image 
-                  src="/fat-test.png" 
+                  src="/images/fat-test.png" 
                   alt="胖狗圖片"
                   width={200}
                   height={200}
