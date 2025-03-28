@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTest } from "../context/TestProvider";
-import Link from "next/link";
 import Image from "next/image";
+import { ResultType } from "../context/TestProvider";
 
 // Component to display trait bars
 const TraitBar = ({ 
@@ -41,10 +41,10 @@ const TraitBar = ({
 // 結果頁面內容組件
 function ResultsContent() {
   const router = useRouter();
-  const { calculateResults, restartTest, isTestComplete } = useTest();
+  const { calculateResults, isTestComplete } = useTest();
   const resultRef = useRef<HTMLDivElement>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [results, setResults] = useState<any>(null);
+  const [results, setResults] = useState<ResultType | null>(null);
   
   useEffect(() => {
     // 如果沒有測試完成，返回測試頁面
