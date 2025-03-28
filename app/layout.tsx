@@ -10,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "狗狗肥胖檢測 | 國家肥胖研究院",
-  description: "國家肥胖研究院最新研究成果，檢測您的心理肥胖程度！",
+  title: "肥胖心理測驗 | 國家肥胖研究院",
+  description: "國家肥胖研究院最新研究成果，透過心理測驗評估您的肥胖程度！",
 };
 
 export default function RootLayout({

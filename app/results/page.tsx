@@ -44,6 +44,7 @@ function ResultsContent() {
   const { calculateResults, restartTest, isTestComplete } = useTest();
   const resultRef = useRef<HTMLDivElement>(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [results, setResults] = useState<any>(null);
   
   useEffect(() => {
     // 如果沒有測試完成，返回測試頁面
@@ -52,15 +53,20 @@ function ResultsContent() {
       return;
     }
     
+    // 在客戶端計算結果
+    const calculatedResults = calculateResults();
+    setResults(calculatedResults);
+    
     // 滾動到頂部
     window.scrollTo(0, 0);
-  }, [isTestComplete, router]);
-  
-  // 獲取結果
-  const results = calculateResults();
+  }, [isTestComplete, router, calculateResults]);
   
   if (!results) {
-    return null;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-amber-50 dark:bg-gray-900">
+        <div className="w-12 h-12 sm:w-16 sm:h-16 border-3 sm:border-4 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
   }
   
   // 生成和分享結果圖片
@@ -150,114 +156,114 @@ function ResultsContent() {
     "整體肥胖": "bg-amber-500"
   };
 
-  // 計算結果等級
-  const getFatLevel = () => {
-    const overallScore = Number(results["整體肥胖"]) || 0;
-    if (overallScore > 80) return "超級胖狗";
-    if (overallScore > 60) return "大胖狗";
-    if (overallScore > 40) return "中胖狗";
-    return "小胖狗";
-  };
-  
   return (
-    <div className="flex flex-col items-center min-h-screen p-4 py-6 gap-4 font-[family-name:var(--font-geist-sans)] bg-amber-50 dark:bg-gray-900 overflow-hidden">
-      <main className="flex flex-col gap-4 items-center w-full max-w-md mx-auto">
-        {/* 可導出的結果區塊 */}
-        <div ref={resultRef} className="w-full bg-amber-50 p-4 rounded-lg">
-          {/* 主要視覺：胖狗圖片和標題 */}
-          <div className="text-center animate-fade-down mb-5">
-            <div className="flex justify-center mb-4">
-              <div className="w-64 h-64 relative">
+    <div className="flex flex-col h-screen bg-amber-50 dark:bg-gray-900 overflow-hidden">
+      <main className="flex-1 w-full px-5 sm:px-8 py-3 sm:py-4 overflow-y-auto">
+        <div className="max-w-2xl mx-auto flex flex-col items-center justify-center min-h-full py-6">
+          {/* 可導出的結果區塊 */}
+          <div ref={resultRef} className="w-full max-w-xl mx-auto">
+            {/* 主要視覺：胖狗圖片和標題 */}
+            <div className="flex flex-col items-center justify-center mb-6">
+              <div className="w-64 h-64 sm:w-80 sm:h-80 relative mb-4 sm:mb-6">
                 <Image 
-                  src="/images/doctor-dog.png" 
-                  alt="博士狗圖片"
-                  width={400}
-                  height={400}
-                  className="object-contain animate-bounce-slow"
+                  src={results.iconPath} 
+                  alt="胖狗圖片"
+                  fill
                   priority
+                  className="object-contain animate-bounce-slow"
                 />
               </div>
+              <h1 className="text-4xl sm:text-5xl font-bold text-center text-gray-900 dark:text-amber-400 mb-2">
+                {results.title}
+              </h1>
+              <p className="text-2xl sm:text-3xl text-center text-gray-800 dark:text-amber-200 mb-6">
+                肥胖指數：<span className="font-bold">{results["整體肥胖"]}%</span>
+              </p>
             </div>
-            <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-amber-400">你是一隻{getFatLevel()}！</h1>
-            <p className="text-2xl text-gray-800">肥胖指數：<span className="font-bold text-3xl">{results["整體肥胖"]}%</span></p>
-          </div>
-          
-          {/* Fat Quote */}
-          <div className="text-center p-3 bg-white rounded-lg mt-3 mb-4 animate-fade-in border-3 border-black" style={{ animationDelay: '1.5s' }}>
-            <p className="italic text-gray-800 text-lg">
-              &ldquo;不是你胖，只是你吃太多餅乾了。汪！&rdquo;
-            </p>
-            <p className="text-sm text-gray-700 mt-1">– 國家肥胖研究院</p>
-          </div>
-          
-          {/* 詳細肥胖特質分析 - 直接顯示 */}
-          <div className="w-full bg-white shadow-md rounded-lg p-3 mt-3 animate-fade-up border-3 border-black">
-            <div className="pt-2">
-              {Object.entries(results)
-                .filter(([trait]) => trait !== "title" && trait !== "subtitle" && trait !== "description" && trait !== "advice" && trait !== "iconPath" && trait !== "level" && ["食物執念", "運動迴避", "零食創意", "自我欺騙", "整體肥胖"].includes(trait))
-                .map(([trait, score], index) => (
-                  <TraitBar 
-                    key={trait} 
-                    trait={trait} 
-                    score={Number(score)} 
-                    color={traitColors[trait] || "bg-gray-500"}
-                    index={index}
-                  />
-                ))
-              }
+            
+            {/* Fat Quote */}
+            <div className="text-center p-4 bg-white rounded-lg mb-6 animate-fade-in border-4 border-black dark:bg-gray-800">
+              <p className="italic text-lg sm:text-xl text-gray-800 dark:text-amber-200">
+                &ldquo;{results.advice}&rdquo;
+              </p>
+              <p className="text-sm sm:text-base text-gray-700 dark:text-amber-300 mt-2">
+                – 國家肥胖研究院
+              </p>
+            </div>
+            
+            {/* 詳細肥胖特質分析 */}
+            <div className="w-full bg-white dark:bg-gray-800 shadow-md rounded-lg p-4 sm:p-5 border-4 border-black">
+              <div className="space-y-3">
+                {Object.entries(results)
+                  .filter(([trait]) => trait !== "title" && trait !== "subtitle" && trait !== "description" && trait !== "advice" && trait !== "iconPath" && ["食物執念", "運動迴避", "零食創意", "自我欺騙"].includes(trait))
+                  .map(([trait, score], index) => (
+                    <TraitBar 
+                      key={trait} 
+                      trait={trait} 
+                      score={Number(score)} 
+                      color={traitColors[trait] || "bg-gray-500"}
+                      index={index}
+                    />
+                  ))
+                }
+              </div>
             </div>
           </div>
-        </div>
-        
-        {/* 分享和匯出按鈕 */}
-        <div className="flex gap-3 w-full mt-1">
-          <button
-            onClick={handleShare}
-            disabled={isGeneratingImage}
-            className={`rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center ${isGeneratingImage ? 'bg-amber-200' : 'bg-amber-300 hover:bg-amber-400'} text-black font-medium text-base h-14`}
-          >
-            {isGeneratingImage ? (
-              <>
-                <div className="w-5 h-5 border-3 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
-                準備中...
-              </>
-            ) : (
-              <>
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
-                </svg>
-                分享結果
-              </>
-            )}
-          </button>
           
-          <button
-            onClick={() => exportAsImage()}
-            disabled={isGeneratingImage}
-            className={`rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center ${isGeneratingImage ? 'bg-gray-100' : 'bg-white hover:bg-amber-100'} text-black font-medium text-base h-14`}
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-            </svg>
-            匯出圖片
-          </button>
-        </div>
-        
-        {/* 操作按鈕 */}
-        <div className="flex gap-3 w-full">
-          <button
-            onClick={restartTest}
-            className="rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center bg-amber-300 text-black hover:bg-amber-400 font-medium text-base h-14"
-          >
-            再測一次！
-          </button>
-          
-          <Link
-            href="/"
-            className="rounded-full border-4 border-black transition-colors flex-1 flex items-center justify-center bg-white hover:bg-amber-100 font-medium text-base h-14 text-gray-900"
-          >
-            回主頁
-          </Link>
+          {/* 分享和匯出按鈕 */}
+          <div className="w-full max-w-xl mx-auto space-y-3 mt-6">
+            <button
+              onClick={handleShare}
+              disabled={isGeneratingImage}
+              className={`w-full rounded-lg border-4 border-black transition-colors flex items-center justify-center ${
+                isGeneratingImage ? 'bg-amber-200' : 'bg-amber-300 hover:bg-amber-400'
+              } text-black font-bold text-lg h-12`}
+            >
+              {isGeneratingImage ? (
+                <>
+                  <div className="w-5 h-5 border-3 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                  準備中...
+                </>
+              ) : (
+                <>
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                  </svg>
+                  分享結果
+                </>
+              )}
+            </button>
+            
+            <button
+              onClick={() => exportAsImage()}
+              disabled={isGeneratingImage}
+              className={`w-full rounded-lg border-4 border-black transition-colors flex items-center justify-center ${
+                isGeneratingImage ? 'bg-gray-100' : 'bg-white hover:bg-amber-100'
+              } text-black font-bold text-lg h-12`}
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              匯出圖片
+            </button>
+            
+            <button
+              onClick={() => {
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                  alert('連結已複製到剪貼簿！');
+                }).catch(() => {
+                  alert('複製失敗，請手動複製連結');
+                });
+              }}
+              className="w-full rounded-lg border-4 border-black transition-colors bg-white hover:bg-amber-100 text-black font-bold text-lg h-12 flex items-center justify-center"
+            >
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+              </svg>
+              複製連結
+            </button>
+          </div>
         </div>
       </main>
     </div>
