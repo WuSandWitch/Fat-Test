@@ -1,21 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { Inter } from "next/font/google";
 import { TestProvider } from "./context/TestProvider";
+import "./globals.css";
 
-const geistSans = Geist({
+const inter = Inter({
+  subsets: ["latin"],
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Mind-Fattness Test | Are You Mentally Fat?",
-  description: "Take our hilarious Mind-Fattness Test to discover your mental obesity level. Warning: results may be both funny and slightly offensive.",
+  title: "狗狗肥胖檢測 | 國家肥胖研究院",
+  description: "國家肥胖研究院最新研究成果，檢測您的心理肥胖程度！",
 };
 
 export default function RootLayout({
@@ -24,13 +20,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <TestProvider>
-          {children}
-        </TestProvider>
+    <html lang="zh-TW" className={`${inter.variable}`}>
+      <body className="min-h-screen bg-amber-50 dark:bg-gray-900">
+        <TestProvider>{children}</TestProvider>
       </body>
     </html>
   );
