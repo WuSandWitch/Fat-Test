@@ -311,20 +311,20 @@ export function TestProvider({ children }: { children: React.ReactNode }) {
     
     switch(remainder) {
       case 0:
-        title = "肥豬胖狗！";
+        title = "你是一隻肥豬胖狗！";
         advice = "又豬又狗，點點點";
         break;
       case 1:
-        title = "超巨胖狗！";
+        title = "你是一隻超巨胖狗！";
         advice = "我知道五隻胖狗裡面你就佔了四隻、、";
         break;
       case 2:
-        title = "十分胖胖狗！";
+        title = "你是一隻十分胖胖狗！";
         advice = "滿分十分🤏🤏";
         break;
       case 3:
       default:
-        title = "超級胖胖狗！";
+        title = "你是一隻超級胖胖狗！";
         advice = "從你左邊走到右邊要叫 Uber";
         break;
     }

@@ -94,7 +94,7 @@ function TestContent() {
       <header className="w-full px-5 sm:px-8 py-3 sm:py-4 flex-none">
         <div className="max-w-3xl mx-auto">
           <div className="flex flex-col sm:flex-row sm:justify-between items-center gap-1 mb-2">
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-amber-100">狗狗肥胖檢測</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-amber-100">肥胖心理檢測</h1>
             <span className="text-sm font-medium bg-white dark:bg-gray-800 text-gray-900 dark:text-amber-100 px-3 py-1 rounded-full border-2 border-black">
               第 {currentQuestionIndex + 1} 題 / 共 {questions.length} 題
             </span>
