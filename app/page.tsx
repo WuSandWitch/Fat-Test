@@ -62,7 +62,7 @@ function HomeContent() {
               onClick={handleStartTest}
               className="block w-full bg-amber-300 hover:bg-amber-400 text-black px-6 py-3 rounded-lg font-bold text-lg text-center border-4 border-black transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none"
             >
-              開始科學測驗
+              開始測驗
             </button>
             
             {/* 作者連結 */}
