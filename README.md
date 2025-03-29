@@ -1,36 +1,21 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# 肥胖心理測驗 😗
+  <img src="public/images/doctor-dog.png" alt="博士狗" width="300" height="300" />
 
-First, run the development server:
+#### 透過[心理測驗](https://fat-test.zudo.cc)得知您的肥胖程度！
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+</div>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 專案介紹
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+這是一個心理測驗網站，通過回答一系列問題來測試您的肥胖程度。測驗基於國家肥胖研究院的最新研究，以輕鬆幽默的方式分析您的飲食心理模式。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 主要功能
 
-## Learn More
+- 10題精心設計的肥胖心理測驗
+- 分析四種肥胖特質：食物執念、運動迴避、自我欺騙、零食創意
+- 根據答案給出您的肥胖類型
+- 支援分享和匯出測驗結果圖片
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+@[Owen Wu](https://github.com/WuSandWitch) | @[Joan Tsai](https://github.com/joan0802)
