@@ -170,6 +170,8 @@ function ResultsContent() {
                   alt="胖狗圖片"
                   fill
                   priority
+                  loading="eager"
+                  sizes="(max-width: 640px) 256px, 320px"
                   className="object-contain animate-bounce-slow"
                 />
               </div>

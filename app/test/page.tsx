@@ -27,6 +27,27 @@ function TestContent() {
     ([key]) => key === currentQuestion.id.toString()
   );
   
+  // 預加載下一題和上一題的圖片
+  useEffect(() => {
+    // 預加載下一題圖片
+    if (currentQuestionIndex < questions.length - 1) {
+      const nextImgPath = questions[currentQuestionIndex + 1].imagePath;
+      if (nextImgPath) {
+        const nextQuestionImg = new window.Image();
+        nextQuestionImg.src = nextImgPath;
+      }
+    }
+    
+    // 預加載上一題圖片
+    if (currentQuestionIndex > 0) {
+      const prevImgPath = questions[currentQuestionIndex - 1].imagePath;
+      if (prevImgPath) {
+        const prevQuestionImg = new window.Image();
+        prevQuestionImg.src = prevImgPath;
+      }
+    }
+  }, [currentQuestionIndex, questions]);
+  
   // 處理選項選擇
   const handleOptionSelect = (index: number) => {
     setAnswer(currentQuestion.id.toString(), `${index + 1}`);
@@ -108,6 +129,8 @@ function TestContent() {
                     alt={`問題 ${currentQuestionIndex + 1} 圖片`}
                     fill
                     priority
+                    loading="eager"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                     className="object-contain animate-fade-in"
                   />
                 )}

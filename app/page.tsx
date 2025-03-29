@@ -29,6 +29,8 @@ function HomeContent() {
                 alt="國家肥胖研究院博士狗"
                 fill
                 priority
+                loading="eager"
+                sizes="(max-width: 640px) 256px, 320px"
                 className="object-contain animate-bounce-slow"
               />
             </div>

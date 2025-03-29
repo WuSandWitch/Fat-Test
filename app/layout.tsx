@@ -21,6 +21,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-TW" className={`${inter.variable}`}>
+      <head>
+        <link rel="preload" as="image" href="/images/doctor-dog.png" />
+        <link rel="preload" as="image" href="/images/fat-dog.png" />
+        <link rel="preload" as="image" href="/images/q1.png" />
+        <link rel="preload" as="image" href="/images/q2.png" />
+      </head>
       <body className="min-h-screen bg-amber-50 dark:bg-gray-900">
         <TestProvider>{children}</TestProvider>
       </body>
