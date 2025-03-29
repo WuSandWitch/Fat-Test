@@ -305,7 +305,7 @@ export function TestProvider({ children }: { children: React.ReactNode }) {
     const avgScore = Math.round(totalScore / Object.keys(results).length);
     
     // 使用 avgScore % 5 決定等級和性格描述
-    const remainder = avgScore % 5;
+    const remainder = avgScore % 4;
     let title = "";
     let advice = "";
     
@@ -323,13 +323,9 @@ export function TestProvider({ children }: { children: React.ReactNode }) {
         advice = "滿分十分🤏🤏";
         break;
       case 3:
+      default:
         title = "超級胖胖狗！";
         advice = "從你左邊走到右邊要叫 Uber";
-        break;
-      case 4:
-      default:
-        title = "吃貨胖狗！";
-        advice = "不是你胖，只是你吃太多餅乾了！汪！";
         break;
     }
     
